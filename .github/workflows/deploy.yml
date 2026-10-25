@@ -42,13 +42,13 @@ jobs:
       - name: Skip if AWS is not connected yet
         if: ${{ vars.AWS_DEPLOY_ROLE_ARN == '' }}
         run: echo "::notice::AWS_DEPLOY_ROLE_ARN is not set for the ${{ env.STAGE }} environment, so deploy is skipped. See README > CI/CD."
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
         with:
           node-version: "20"
