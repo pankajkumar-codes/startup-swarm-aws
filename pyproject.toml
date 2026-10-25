@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "startup-swarm-aws"
+dynamic = ["version"]
+description = "Run startup-swarm on AWS: S3 + DynamoDB backend, Bedrock AgentCore runtime, CDK stacks and beta/prod deploys"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+keywords = ["multi-agent", "ai-agents", "aws", "amazon-bedrock", "agentcore", "cdk"]
+dependencies = [
+    # The core, pinned to a release tag. Bump together with the core's releases.
+    "startup-swarm[bedrock] @ git+https://github.com/pankajkumar-codes/startup-swarm.git@v0.3.0",
+    "boto3>=1.40",
+]
+
+[project.optional-dependencies]
+agentcore = ["bedrock-agentcore"]
+dev = [
+    "pytest>=8.0",
+    "black>=24.0",
+    "flake8>=7.0",
+]
+
+[project.entry-points."startup_swarm.backends"]
+aws = "startup_swarm_aws.backend:AWSBackend"
+
+[project.urls]
+Homepage = "https://github.com/pankajkumar-codes/startup-swarm-aws"
+Core = "https://github.com/pankajkumar-codes/startup-swarm"
+
+[tool.setuptools.dynamic]
+version = { attr = "startup_swarm_aws.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["startup_swarm_aws*"]
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
