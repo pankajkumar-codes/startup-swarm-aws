@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Depends on startup-swarm v0.3.1 (safer `task --target-dir`, clearer mock output).
 - README: status and cost warnings (not yet tested on a real AWS account), Windows PowerShell steps.
 
 ## 0.1.0 (2026-10-25)

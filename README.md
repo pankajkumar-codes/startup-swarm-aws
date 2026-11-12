@@ -212,7 +212,7 @@ gates, token limits) is documented in the core README.
 `pyproject.toml` pins the core to a tag:
 
 ```toml
-"startup-swarm[bedrock] @ git+https://github.com/pankajkumar-codes/startup-swarm.git@v0.3.0"
+"startup-swarm[bedrock] @ git+https://github.com/pankajkumar-codes/startup-swarm.git@v0.3.1"
 ```
 
 To upgrade, release the core first (tag `vX.Y.Z` there). Then change the tag here, run
@@ -250,7 +250,7 @@ tests/                offline tests with fake S3 and DynamoDB clients
 
 | Symptom | Fix |
 |---|---|
-| `pip install` can't find `startup-swarm@v0.3.0` | The core tag doesn't exist yet. Release the core first. |
+| `pip install` can't find `startup-swarm@v0.3.1` | The core tag doesn't exist yet. Release the core first. |
 | `Unknown backend 'aws'` | Install this package (`pip install -e .`) in the same environment as the core. |
 | `Backend 'aws' needs S3_ARTIFACT_BUCKET...` | Set the bucket and/or table from the CDK outputs. |
 | `AccessDeniedException` | Attach the `startup-swarm-runner-<stage>` policy to your IAM identity, and enable the model in Bedrock. |
