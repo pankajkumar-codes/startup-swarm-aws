@@ -12,7 +12,7 @@ requires-python = ">=3.11"
 keywords = ["multi-agent", "ai-agents", "aws", "amazon-bedrock", "agentcore", "cdk"]
 dependencies = [
     # The core, pinned to a release tag. Bump together with the core's releases.
-    "startup-swarm[bedrock] @ git+https://github.com/pankajkumar-codes/startup-swarm.git@v0.3.0",
+    "startup-swarm[bedrock] @ git+https://github.com/pankajkumar-codes/startup-swarm.git@v0.3.1",
     "boto3>=1.40",
 ]
 
