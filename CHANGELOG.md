@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- README: status and cost warnings (not yet tested on a real AWS account), Windows PowerShell steps.
+
 ## 0.1.0 (2026-10-25)
 
 First release, split out of startup-swarm 0.2.0.
