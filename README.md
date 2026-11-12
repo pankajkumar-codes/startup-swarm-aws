@@ -13,6 +13,19 @@ software startup, on AWS:
 - **Optional hosted mode** on Bedrock AgentCore Runtime.
 - **CI/CD with GitHub OIDC.** No AWS keys are stored in GitHub. Merges to `main` deploy beta, and version tags deploy prod.
 
+> **Status and cost: read before deploying**
+>
+> - **Not yet tested on a real AWS account.** The code, CDK stacks and deploy workflow pass offline tests and
+>   `cdk synth`, but a real deploy, a real Bedrock run and hosted mode (AgentCore) have not been tried yet.
+>   Treat this repo as a preview and please report what you find.
+> - **It costs money.** Bedrock model calls are the main cost (tokens, not a flat fee). S3 and DynamoDB (on demand)
+>   are cents at small scale. Start with a small `token_controls.budget_cap_tokens` and watch Cost Explorer.
+> - **It creates IAM roles and policies** in your account. Read `infrastructure/stacks/` first, and use a sandbox
+>   account or a role with limited permissions if you can.
+> - **`prod` resources are retained.** The prod bucket and table (with point-in-time recovery) stay in your account,
+>   and keep billing, even after you delete the stack. Empty and delete them by hand if you no longer want them.
+> - Generated code is never executed by the orchestrator. Review it before you run or deploy it.
+
 The agents, pipeline and CLI live in the core repo. This repo installs it as a dependency,
 pinned to a release tag, and adds only the AWS parts.
 
@@ -28,14 +41,30 @@ startup-swarm (core)              startup-swarm-aws (this repo)
 
 Requires Python 3.11+.
 
+macOS / Linux:
+
 ```bash
 git clone https://github.com/pankajkumar-codes/startup-swarm-aws.git
 cd startup-swarm-aws
-python3 -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"                                   # also installs the startup-swarm core
+```
 
+Windows (PowerShell):
+
+```powershell
+git clone https://github.com/pankajkumar-codes/startup-swarm-aws.git
+cd startup-swarm-aws
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1              # if blocked: Set-ExecutionPolicy -Scope Process Bypass
+pip install -e ".[dev]"
+```
+
+Then, in either shell:
+
+```
 python -m pytest -q
-startup-swarm info                                        # Backends should list: aws, local
+startup-swarm info                          # Backends should list: aws, local
 startup-swarm run --mock --idea "A CLI that turns meeting notes into Jira tickets"
 startup-swarm status --mock
 ```
@@ -70,14 +99,29 @@ The stack creates:
 | IAM role | `startup-swarm-agentcore-beta` | For hosted mode (AgentCore Runtime) |
 | Managed policy | `startup-swarm-runner-beta` | Attach this to the IAM user or role you run the CLI with |
 
-Then run from your laptop:
+Then run from your laptop. Take the bucket and table names from `infrastructure/cdk-outputs-beta.json`.
+
+macOS / Linux:
 
 ```bash
-cp .env.example .env.beta     # fill S3_ARTIFACT_BUCKET and DYNAMODB_STATE_TABLE from cdk-outputs-beta.json
+cp .env.example .env.beta     # fill S3_ARTIFACT_BUCKET and DYNAMODB_STATE_TABLE
 set -a; source .env.beta; set +a
 startup-swarm run --stage beta --project demo --idea "..."
 startup-swarm status --stage beta --project demo
 ```
+
+Windows (PowerShell):
+
+```powershell
+$env:SWARM_PROVIDER = "bedrock"; $env:SWARM_BACKEND = "aws"; $env:SWARM_REGION = "us-east-1"
+$env:S3_ARTIFACT_BUCKET = "<ArtifactBucketName>"
+$env:DYNAMODB_STATE_TABLE = "startup-swarm-state-beta"
+startup-swarm run --stage beta --project demo --idea "..."
+startup-swarm status --stage beta --project demo
+```
+
+You should see the same phase-by-phase log as the offline run, then `COMPLETED`, and the documents
+appear in the S3 bucket.
 
 `config.yaml` in this repo already sets `provider: bedrock` and `backend: aws`. You can put the
 bucket and table names there instead of in env vars. Start with a small idea and a low
