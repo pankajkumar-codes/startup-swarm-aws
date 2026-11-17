@@ -55,8 +55,12 @@ startup-swarm run --idea "A todo app" --backend aws --provider mock --project de
 ```
 
 Expect `COMPLETED`, objects under `demo/` in the bucket, and `PROJECT#demo` items in the
-table. Running `startup-swarm status` with a fresh, empty workspace should still report
-the finished phases, because state lives in DynamoDB.
+table. To confirm state lives in DynamoDB, check it from a fresh, empty workspace; it should
+still report the finished phases:
+
+```powershell
+startup-swarm status --backend aws --provider mock --project demo --workspace .\ws2
+```
 
 ## Tested status
 
